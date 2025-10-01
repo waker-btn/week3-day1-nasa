@@ -13,8 +13,8 @@ async function commenceSearch(e) {
 
   searchResults = await getResultsFromAPI(searchQuery);
 
-  sortResults(searchResults);
-  displayResults(parsedResults);
+  parsedResults = await sortResults(searchResults);
+//   displayResults(parsedResults);
 }
 
 async function getResultsFromAPI(searchQuery) {
@@ -36,14 +36,29 @@ async function getResultsFromAPI(searchQuery) {
 
 function displayResults() {}
 
-function sortResults(results) {
-  let working = JSON.parse(results);
+async function sortResults(results) {
+  let working = results;
   let items = working.collection.items;
-  let sorted;
+  let sorted = [];
 
   for (const result in items) {
-    
+    let entry = {};
+
+    entry.id = items[result].data[0].nasa_id;
+    entry.description = items[result].data[0].description;
+
+    for (link in items[result].links) {
+      if (items[result].links[link].rel == "preview") {
+        entry.image = items[result].links[link].href;
+        break;
+      }
+    }
+
+    sorted.push(entry);
   }
+
+  return sorted;
+
 }
 
 initialisePage();
