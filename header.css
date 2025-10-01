@@ -1,0 +1,10 @@
+header{
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #3d3b85;
+}
+
+.header__title{
+    margin: 0px;
+}
