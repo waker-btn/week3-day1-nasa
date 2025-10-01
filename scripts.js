@@ -9,12 +9,26 @@ function initialisePage() {
 async function commenceSearch(e) {
   e.preventDefault();
 
+  clearPreviousResults();
+
   let searchQuery = document.querySelector(".header__search__text-query").value;
 
   searchResults = await getResultsFromAPI(searchQuery);
 
   parsedResults = await sortResults(searchResults);
-//   displayResults(parsedResults);
+  displayResults(parsedResults);
+}
+
+function clearPreviousResults() {
+  document.querySelectorAll(".main__result").forEach((e) => e.remove());
+}
+
+function limitText(text) {
+  if (text.length > 256) {
+    return (text.substring(0, 256) + "...");
+  } else {
+    return text;
+  }
 }
 
 async function getResultsFromAPI(searchQuery) {
@@ -34,7 +48,30 @@ async function getResultsFromAPI(searchQuery) {
   }
 }
 
-function displayResults() {}
+function displayResults() {
+  let mainView = document.querySelector("main");
+
+  for (result in parsedResults) {
+    const card = document.createElement("div");
+    const picture = document.createElement("img");
+    const text = document.createElement("p");
+    const textContent = document.createTextNode(
+      limitText(parsedResults[result].description)
+    );
+
+    card.classList.add("main__result");
+    picture.classList.add("main__result__image");
+    text.classList.add("main__result__text");
+
+    picture.src = parsedResults[result].image;
+
+    text.appendChild(textContent);
+    card.appendChild(picture);
+    card.appendChild(text);
+
+    mainView.appendChild(card);
+  }
+}
 
 async function sortResults(results) {
   let working = results;
@@ -58,7 +95,6 @@ async function sortResults(results) {
   }
 
   return sorted;
-
 }
 
 initialisePage();
